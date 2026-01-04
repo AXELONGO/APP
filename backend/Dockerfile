@@ -1,16 +1,10 @@
 FROM node:18-alpine
-
 RUN apk add --no-cache openssl
 WORKDIR /app
-
 COPY package*.json ./
 RUN npm install
-
-# Copy schema and generate client
-COPY prisma ./prisma
+COPY prisma ./prisma/
 RUN npx prisma generate
-
 COPY . .
-
-# Use new entrypoint
+EXPOSE 3001
 CMD ["node", "index.js"]
