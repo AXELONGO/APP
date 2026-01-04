@@ -37,10 +37,17 @@ let allowedUsers = [];
   }
 })();
 
-// Health Check / Root Route
-app.get('/', (req, res) => {
+// Serve static files from the public directory (Frontend build)
+app.use(express.static('public'));
+
+// API Routes should be defined before the catch-all handler
+// ... existing API routes ...
+
+// Health Check (Optional - can be kept or removed if covered by index.html)
+app.get('/health', (req, res) => {
     res.send('Backend is running');
 });
+
 
 // Routes
 
@@ -744,6 +751,17 @@ app.get('/api/support-tickets', async (req, res) => {
          console.error("Error fetching support tickets:", error);
          // Return empty if failure
          res.json([]);
+    }
+});
+
+// Fallback to index.html for SPA routing (must be last)
+import path from 'path';
+app.get('*', (req, res) => {
+    // Only serve index.html for GET requests that accept HTML
+    if (req.accepts('html')) {
+        res.sendFile(path.resolve('public', 'index.html'));
+    } else {
+        res.status(404).json({ error: 'Not found' });
     }
 });
 
