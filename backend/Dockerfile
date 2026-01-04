@@ -13,4 +13,4 @@ RUN npx prisma generate
 COPY . .
 
 # Use new entrypoint
-CMD ["node", "src/app.js"]
+CMD ["node", "index.js"]
