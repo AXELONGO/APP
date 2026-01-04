@@ -15,16 +15,45 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Notion Client
-const notion = new Client({ auth: process.env.NOTION_API_KEY });
+// Initialize Notion Client safely
+let notion = null;
+try {
+  if (process.env.NOTION_API_KEY) {
+    notion = new Client({ auth: process.env.NOTION_API_KEY });
+  } else {
+    console.warn('NOTION_API_KEY not set - Notion features will be disabled');
+  }
+} catch (err) {
+  console.error('Failed to initialize Notion client:', err.message);
+}
 
-// Google Auth
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+// Initialize Google Auth Client safely
+let client = null;
+try {
+  if (process.env.GOOGLE_CLIENT_ID) {
+    client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+  } else {
+    console.warn('GOOGLE_CLIENT_ID not set - Google Auth will be disabled');
+  }
+} catch (err) {
+  console.error('Failed to initialize Google Auth client:', err.message);
+}
 
-// Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+// Initialize Gemini AI safely
+let genAI = null;
+let model = null;
+try {
+  if (process.env.GEMINI_API_KEY) {
+    genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    model = genAI.getGenerativeModel({ model: "gemini-pro" });
+  } else {
+    console.warn('GEMINI_API_KEY not set - Gemini AI features will be disabled');
+  }
+} catch (err) {
+  console.error('Failed to initialize Gemini AI client:', err.message);
+}
 
+// Load allowed users
 // Load allowed users
 let allowedUsers = [];
 try {
