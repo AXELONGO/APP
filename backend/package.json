@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch src/server.js",
-"build": "mkdir -p dist && echo 'Build complete'"
+    "build": "node -e \"const fs=require('fs'); if(!fs.existsSync('dist')) fs.mkdirSync('dist');\""
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.0",
@@ -16,7 +16,6 @@
     "express": "^4.19.2",
     "google-auth-library": "^9.7.0",
     "prisma": "^5.17.0",
-    "sqlite3": "^5.1.7",
-    "@notionhq/client": "^2.2.9"
+    "sqlite3": "^5.1.7"
   }
 }
