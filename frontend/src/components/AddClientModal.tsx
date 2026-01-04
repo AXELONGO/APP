@@ -1,45 +1,53 @@
-
 import React, { useState } from 'react';
+import { Lead } from '../types';
 
 interface AddClientModalProps {
+    isOpen: boolean;
     onClose: () => void;
-    onSave: (client: any) => void;
+    onSave: (clientData: Partial<Lead>) => Promise<void>;
 }
 
-const AddClientModal: React.FC<AddClientModalProps> = ({ onClose, onSave }) => {
+const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSave }) => {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
-    const [category, setCategory] = useState('Transporte');
+    const [category, setCategory] = useState<Lead['category']>('Otros');
     const [loading, setLoading] = useState(false);
+
+    if (!isOpen) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const newClient = {
-            id: Date.now(),
-            name,
-            phone,
-            email,
-            address,
-            category,
-            status: 'Active',
-            lastContact: new Date().toISOString()
-        };
-        
-        onSave(newClient);
-        setLoading(false);
-        onClose();
+        try {
+            await onSave({
+                name,
+                phone,
+                email,
+                address,
+                category,
+                clase: 'C', // Default class
+                status: 'active'
+            });
+            onClose();
+            // Reset form
+            setName('');
+            setPhone('');
+            setEmail('');
+            setAddress('');
+            setCategory('Otros');
+        } catch (error) {
+            console.error("Error creating client:", error);
+            alert("Error al crear el cliente");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="w-full max-w-lg bg-[#1C1C1E] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="bg-[#1A1A1A] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
                 <div className="p-6 border-b border-white/5 flex justify-between items-center">
                     <h2 className="text-xl font-bold text-white">Nuevo Cliente</h2>
                     <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">

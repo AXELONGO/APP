@@ -12,7 +12,9 @@ const AppContent: React.FC = () => {
     const { 
         activeTab, 
         leads, 
+        clients,
         handleSelectLead, 
+        handleSelectClient,
         history, 
         handleClassChange,
         activeLeadId,
@@ -31,22 +33,11 @@ const AppContent: React.FC = () => {
 
     const activeLead = leads.find(l => l.id === activeLeadId);
 
-    const handleTabChange = (tab: any) => {
-        // useAppContext expects the correct type, simple casting if needed or define types properly
-        // AppContext defines types as 'ventas' | 'cotizaciones' | 'clientes' | 'masivos'
-        // useAppContext's setActiveTab handles it.
-        // We need to access setActiveTab from context.
-        // destructuring was: const { activeTab, leads, handleSelectLead, history, handleClassChange, activeLeadId, setActiveTab, setIsLeftSidebarOpen } = useAppContext()
-        // wait, I missed destructuring some of them in previous create call.
-    };
-    
-    // REDO DESTRUCTURE to get setter
-    
     return (
         <MainLayout>
              <Header 
                 activeTab={activeTab}
-                onTabChange={setActiveTab} // setActiveTab is from context
+                onTabChange={setActiveTab}
                 onToggleLeftSidebar={() => setIsLeftSidebarOpen(prev => !prev)}
                 onToggleRightSidebar={() => setIsRightSidebarOpen(prev => !prev)}
                 onLogout={() => console.log("Logout")}
@@ -73,7 +64,14 @@ const AppContent: React.FC = () => {
                  </div>
              )}
              {activeTab === 'clientes' && (
-                 <ClientsView />
+                 <ClientsView 
+                    clients={clients}
+                    history={history}
+                    toggleSelectClient={handleSelectClient}
+                    onSyncToNotion={handleSync}
+                    isSyncing={isSyncing}
+                    onClassChange={handleClassChange}
+                 />
              )}
              {/* Add other tabs placeholders if needed */}
              {(activeTab !== 'ventas' && activeTab !== 'clientes') && (
