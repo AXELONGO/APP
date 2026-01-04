@@ -19,7 +19,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ onClose, onSave }) => {
         setLoading(true);
         
         // Simulate API call
-        await newPpormise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
         const newClient = {
             id: Date.now(),
