@@ -5,8 +5,8 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
-        "build": "echo 'Build completed'"
+    "dev": "node --watch src/server.js",
+    "build": "echo 'Build completed'"
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.0",
