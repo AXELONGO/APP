@@ -15,16 +15,31 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Notion Client
-const notion = new Client({ auth: process.env.NOTION_API_KEY });
+// Notion Client - Initialize safely
+let notion = null;
+if (process.env.NOTION_API_KEY) {
+  notion = new Client({ auth: process.env.NOTION_API_KEY });
+} else {
+  console.warn('NOTION_API_KEY not set - Notion features will be disabled');
+}
 
-// Google Auth
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+// Google Auth - Initialize safely
+let client = null;
+if (process.env.GOOGLE_CLIENT_ID) {
+  client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+} else {
+  console.warn('GOOGLE_CLIENT_ID not set - Google Auth will be disabled');
+}
 
-// Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
+// Gemini AI - Initialize safely
+let genAI = null;
+let model = null;
+if (process.env.GEMINI_API_KEY) {
+  genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  model = genAI.getGenerativeModel({ model: "gemini-pro" });
+} else {
+  console.warn('GEMINI_API_KEY not set - Gemini AI features will be disabled');
+}
 // Load allowed users
 // Load allowed users
 let allowedUsers = [];
