@@ -1,30 +1,26 @@
-import path from 'path';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, '.', '');
-  return {
-    server: {
-      port: 3000,
-      host: '0.0.0.0',
-      proxy: {
-        '/api/webhook': {
-          target: 'https://automatizaciones-n8n.tzudkj.easypanel.host/webhook/COTIZACION',
-          changeOrigin: true,
-          rewrite: (path) => '', // Send to root of target
-          secure: false,
-        }
-      }
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
     },
-    plugins: [react()],
-    define: {
-      'process.env': {}
-    },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, '.'),
-      }
+  },
+  server: {
+    port: 80,
+    host: true,
+    proxy: {
+      '/api': {
+        target: 'http://backend:3001',
+        changeOrigin: true,
+      },
     }
-  };
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: true
+  }
 });
