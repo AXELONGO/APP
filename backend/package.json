@@ -16,6 +16,7 @@
     "express": "^4.19.2",
     "google-auth-library": "^9.7.0",
     "prisma": "^5.17.0",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "@notionhq/client": "^2.2.9"
   }
 }
