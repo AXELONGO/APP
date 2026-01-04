@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Client {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String?   @unique
+  phone     String?
+  address   String?
+  website   String?
+  tags      String?   // Stored as comma-separated string
+  clase     String?   // A, B, C
+  agent     String?
+  status    String?   // active, inactive, prospect
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  history   History[]
+  quotes    Quote[]
+}
+
+model Lead {
+  id        Int       @id @default(autoincrement())
+  name      String
+  phone     String?
+  address   String?
+  website   String?
+  clase     String?
+  agent     String?
+  status    String?   @default("new")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  history   History[]
+}
+
+model History {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  agent     String?
+  type      String?  // Call, Email, Note, Meeting
+  comment   String?
+  date      DateTime @default(now()) // Keeping 'date' to match likely frontend usage, traversing defaults to now
+  createdAt DateTime @default(now())
+  
+  clientId  Int?
+  client    Client?  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  leadId    Int?
+  lead      Lead?    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model Quote {
+  id        Int      @id @default(autoincrement())
+  total     Float
+  pdfUrl    String?
+  status    String?  // draft, sent, accepted
+  createdAt DateTime @default(now())
+  
+  clientId  Int
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
