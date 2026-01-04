@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch src/server.js",
-    "build": "mkdir -p dist && echo 'Build completed' > dist/build.txt"
+    "build": "node -e \"const fs=require('fs'); if(!fs.existsSync('dist')) fs.mkdirSync('dist');\""
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.0",
