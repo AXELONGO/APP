@@ -56,14 +56,15 @@ try {
 // Load allowed users
 // Load allowed users
 let allowedUsers = [];
-try {
-  const data = await readFile(new URL('./allowed_users.json', import.meta.url));
-  allowedUsers = JSON.parse(data);
-} catch (error) {
-  console.warn("Could not load allowed_users.json, using empty list or fallback");
-  allowedUsers = []; // Should be populated for auth to work properly
-}
-
+(async () => {
+  try {
+    const data = await readFile(new URL('./allowed_users.json', import.meta.url));
+    allowedUsers = JSON.parse(data);
+  } catch (error) {
+    console.warn("Could not load allowed_users.json, using empty list or fallback");
+    allowedUsers = []; // Should be populated for auth to work properly
+  }
+})();
 // Routes
 
 // POST /api/auth/google
